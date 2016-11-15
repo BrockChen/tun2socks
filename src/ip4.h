@@ -32,6 +32,9 @@
 #include <stdint.h>
 #include "define.h"  // NOLINT
 
+#define UDP_PROTOCOL 17
+#define TCP_PROTOCOL 6
+
 // Mac头部，总长度14字节
 struct eth_hdr {
   uint8_t dstmac[6];  // 目标mac地址
@@ -66,6 +69,7 @@ extern void ip_input(ip_hdr* ip);
 struct ip_reassitem {
   struct ip_reassitem* next;
   struct ip_reassdata* data;
+  uint16_t id;                // 如果ip分片，那么不同片中id会相同
   uint32_t srcaddr;           // 源IP地址
   uint32_t dstaddr;           // 目的IP地址
   uint16_t data_len;          // 已经收到的数据报长度
