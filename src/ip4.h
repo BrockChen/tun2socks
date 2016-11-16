@@ -61,6 +61,24 @@ struct ip_hdr {
   uint32_t dstaddr;           // 目的IP地址
 } __attribute__((packed));
 
+struct ip_packet {
+  uint8_t ihl;
+  uint8_t version;
+  uint8_t tos;
+  uint16_t total_len;
+  uint16_t id;
+  uint8_t flags;
+  uint16_t frag_off;
+  uint8_t ttl;
+  uint8_t protocol;
+  uint16_t chk_sum;           // 检验和
+  uint32_t srcaddr;           // 源IP地址
+  uint32_t dstaddr;           // 目的IP地址
+  uint8_t *data;
+};
+
+extern int parse_header(const uint8_t* data, int len, ip_packet* packet);
+extern int parse_ip(const uint8_t* data, int len, ip_packet* packet);
 
 extern struct ip_reassitem* reass_header;
 extern void ip_input(ip_hdr* ip);

@@ -13,9 +13,58 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <string.h>
-#include <checksum.h>
+#include "checksum.h"
 
 struct ip_reassitem* reass_header = nullptr;
+
+int parse_header(const uint8_t* data, int len, ip_packet* packet) {
+  if (len < 20) {
+    return 1;
+  }
+  const struct ip_hdr* header = reinterpret_cast<const struct ip_hdr*>(data);
+  packet->version = header->version;
+  packet->ihl = header->ihl << 2;
+  packet->total_len = ntohs(header->len);
+  packet->id = ntohs(header->id);
+  uint16_t frag_off = ntohs(header->frag_off);
+  if ((frag_off & IP_RF) == IP_RF) {
+    packet->flags |= 0x04;
+  }
+  if ((frag_off & IP_DF) == IP_DF) {
+    packet->flags |= 0x02;
+  }
+  if ((frag_off & IP_MF) == IP_MF) {
+    packet->flags |= 0x01;
+  }
+  packet->frag_off = (frag_off &= IP_OFFMASK);
+  packet->ttl = header->ttl;
+  packet->protocol = header->protocol;
+  packet->chk_sum = ntohs(header->chk_sum);
+  packet->srcaddr = ntohl(header->srcaddr);
+  packet->dstaddr = ntohl(header->dstaddr);
+  return 0;
+}
+
+int parse_ip(const uint8_t* data, int len, ip_packet* packet) {
+  if (len < 20) {
+    return 1;
+  }
+  const struct ip_hdr* header = reinterpret_cast<const struct ip_hdr*>(data);
+  int total_len = ntohs(header->len);
+  if (total_len > len) {  // 说明data不是一个完整的ip包
+    return 2;
+  }
+  int ret = 0;
+  if ((ret = parse_header(data, len, packet)) != 0) {
+    return ret;
+  }
+
+  uint8_t* content = reinterpret_cast<uint8_t*>(malloc(
+      total_len - packet->ihl));
+  memcpy(content, (data+packet->ihl), total_len - packet->ihl);
+  packet->data = content;
+  return 0;
+}
 
 // 拼接，把完整的包交给上层处理
 void ip_input(ip_hdr* ip) {

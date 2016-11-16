@@ -26,9 +26,7 @@ int ip_checksum(uint8_t * packets, int len) {
   uint16_t buf[10] = {0};
   for (int i = 0; i < 10; i++) {
     buf[i] = (packets[i*2] << 8) + packets[i*2+1];
-    printf("%04x ", buf[i]);
   }
-  printf("\n");
   buf[5] = 0;
 
   for (int i = 0; i < 10; i++) {

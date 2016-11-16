@@ -53,5 +53,10 @@ struct tcp_hdr {
   uint16_t urp;            // 16为紧急指针
 } __attribute__((packed));
 
+
+void input_tcp_segment();
+
+
+
 #endif  // TCP_H_
 
