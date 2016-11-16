@@ -35,6 +35,10 @@
 #define UDP_PROTOCOL 17
 #define TCP_PROTOCOL 6
 
+#define IP_MORE_FRAGMENTS  1
+#define IP_DNOT_FRAGMENT   2
+#define IP_RESERVED_BIT    4
+
 // Mac头部，总长度14字节
 struct eth_hdr {
   uint8_t dstmac[6];  // 目标mac地址
@@ -77,32 +81,11 @@ struct ip_packet {
   uint8_t *data;
 };
 
+// 0表示成功，1长度小于20，2表示不是ipv4类型，3：表示整个包不完整
 extern int parse_header(const uint8_t* data, int len, ip_packet* packet);
 extern int parse_ip(const uint8_t* data, int len, ip_packet* packet);
 
-extern struct ip_reassitem* reass_header;
-extern void ip_input(ip_hdr* ip);
-
-// 用于ip数据拼接的链
-struct ip_reassitem {
-  struct ip_reassitem* next;
-  struct ip_reassdata* data;
-  uint16_t id;                // 如果ip分片，那么不同片中id会相同
-  uint32_t srcaddr;           // 源IP地址
-  uint32_t dstaddr;           // 目的IP地址
-  uint16_t data_len;          // 已经收到的数据报长度
-  uint8_t flags;              // 是否收到最后一个分片包
-  uint8_t timer;              // 设置超时间隔
-};
-
-// 用于ip数据拼接的项
-struct ip_reassdata {
-  struct ip_reassdata *next;  // 用于构建单向链表的指针
-  struct ip_hdr iphdr;        // 该数据报的 IP 报头
-};
-
-
-
+extern int ip_input(const uint8_t* data, int len);
 
 
 #endif  // IP4_H_

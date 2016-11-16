@@ -18,7 +18,7 @@
 // 3、  如果和的高16bit不为0，则将和的高16bit和低16bit反复相加，
 //      直到和的高16bit为0，从而获得一个16bit的值；
 // 4、  将该16bit的值取反，存入校验和字段。
-int ip_checksum(uint8_t * packets, int len) {
+int ip_checksum(const uint8_t * packets, int len) {
   if (len < 20) {
     return 0;
   }

@@ -14,14 +14,17 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include "checksum.h"
+#include "errors.h"
 
-struct ip_reassitem* reass_header = nullptr;
 
 int parse_header(const uint8_t* data, int len, ip_packet* packet) {
   if (len < 20) {
-    return 1;
+    return ERR_HEADER_TOO_SHORT;
   }
   const struct ip_hdr* header = reinterpret_cast<const struct ip_hdr*>(data);
+  if (header->version != 4) {
+    return ERR_IP_VERSION;
+  }
   packet->version = header->version;
   packet->ihl = header->ihl << 2;
   packet->total_len = ntohs(header->len);
@@ -42,53 +45,63 @@ int parse_header(const uint8_t* data, int len, ip_packet* packet) {
   packet->chk_sum = ntohs(header->chk_sum);
   packet->srcaddr = ntohl(header->srcaddr);
   packet->dstaddr = ntohl(header->dstaddr);
-  return 0;
+  return ERR_SUCCESS;
 }
 
 int parse_ip(const uint8_t* data, int len, ip_packet* packet) {
   if (len < 20) {
-    return 1;
+    return ERR_HEADER_TOO_SHORT;
   }
   const struct ip_hdr* header = reinterpret_cast<const struct ip_hdr*>(data);
   int total_len = ntohs(header->len);
   if (total_len > len) {  // 说明data不是一个完整的ip包
-    return 2;
+    return ERR_PACKET_TOO_SHORT;
   }
-  int ret = 0;
+  int ret = ERR_SUCCESS;
   if ((ret = parse_header(data, len, packet)) != 0) {
     return ret;
   }
 
+  // copy一份而不是指向原来的data中，因为对于有些ip包要多个包重组之后才能传给下层
+  // 如果不在这里copy一份，就会导致可能会由于用户删除了data而导致出错；
+  // 同理，对于tcp中解析也会存在这样的原因，导致在tcp解析中也要把tcp的内容copy
+  // 一份，所以一个ip包在解析时，基本上会被copy两份
   uint8_t* content = reinterpret_cast<uint8_t*>(malloc(
       total_len - packet->ihl));
   memcpy(content, (data+packet->ihl), total_len - packet->ihl);
   packet->data = content;
-  return 0;
+  return ret;
 }
 
+extern int input_tcp(const uint8_t* data, int len);
+
 // 拼接，把完整的包交给上层处理
-void ip_input(ip_hdr* ip) {
+int ip_input(const uint8_t* data, int len) {
+  struct ip_packet packet;
+  int ret = ERR_SUCCESS;
+  if ((ret = parse_ip(data, len, &packet)) != 0) {
+    return ret;
+  }
   // 这里只处理tcp
-  if (ip->protocol != TCP_PROTOCOL) {
-    return;
+  if (packet.protocol != TCP_PROTOCOL) {
+    return ERR_NOT_TCP_PACKET;
   }
   // 校验ip包合法性, 版本,checksum
-  if (ip->version != 4) {
-    DEBUG_LOG("IP packet dropped due to bad version number:%d", ip->version);
-    return;
+  if (packet.version != 4) {
+    DEBUG_LOG("IP packet dropped due to bad version number:%d", packet.version);
+    return ERR_IP_VERSION;
   }
 
-  int checksum = ip_checksum(reinterpret_cast<uint8_t*>(ip), 20);
-  if (checksum != ntohs(ip->chk_sum)) {
-    DEBUG_LOG("IP packet dropped due to bad checksum:%d", ntohs(ip->chk_sum));
-    return;
+  int checksum = ip_checksum(data, len);
+  if (checksum != packet.chk_sum) {
+    DEBUG_LOG("IP packet dropped due to bad checksum:%d", packet.chk_sum);
+    return ERR_CHECKSUM;
   }
 
   // 如果没有分片，那么就不用拼接
-  int flag_offset = ntohl(ip->frag_off);
-  if ((flag_offset & IP_MF) != IP_MF) {
-    // 这里只处理tcp
-    return;
+  if ((packet.flags & IP_MORE_FRAGMENTS) != IP_MORE_FRAGMENTS) {
+    // 由于只处理tcp，tcp分段机制保证了ip层不用再分片
+    return input_tcp(packet.data, packet.total_len-packet.ihl);
   }
 
   // 对于TCP来说，它是尽量避免分片的,它通过MSS（最长报文大小），用来表
@@ -113,6 +126,7 @@ void ip_input(ip_hdr* ip) {
   //   reass_header = item;
   // } else {
   // }
+  return ERR_OTHER;
 }
 
 void ip_output() {

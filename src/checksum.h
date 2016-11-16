@@ -14,6 +14,6 @@
 
 #include "ip4.h"  // NOLINT
 
-int ip_checksum(uint8_t * packets, int len);
+int ip_checksum(const uint8_t * packets, int len);
 
 #endif  // CHECKSUM_H_

@@ -54,7 +54,23 @@ struct tcp_hdr {
 } __attribute__((packed));
 
 
-void input_tcp_segment();
+struct tcp_packet {
+  uint16_t sport;          // 源端口号
+  uint16_t dport;          // 目的端口号
+  uint32_t seq;            // 序列号
+  uint32_t ack_seq;        // 确认号
+  uint8_t reserved;        // 保留6位中的4位首部长度
+  uint8_t thl;             // tcp头部长度
+  uint8_t flags;           // 8位标志
+  uint16_t wsize;          // 16位窗口大小
+  uint16_t csum;           // 16位TCP检验和
+  uint16_t urp;            // 16为紧急指针
+  uint8_t* data;
+};
+
+
+// input a tcp segment
+int input_tcp(const uint8_t* data, int len);
 
 
 
