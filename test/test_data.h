@@ -16,6 +16,15 @@
 //              一定是四次，当被关闭的一方发送ack和fin给主动关闭的一方时，它
 //              这两个包可能是一起发送
 //
+//              当某个主机开启一个TCP会话时，他的初始序列号是随机的，可能是0和
+//              4,294,967,295之间的任意值，然而，像Wireshark这种工具，通常
+//              显示的都是相对序列号/确认号，而不是实际序列号/确认号，相对序列
+//              号/确认号是和TCP会话的初始序列号相关联的。
+//              注意seq和ack在wireshark中是相对的，如果想要关闭相对序
+//              列号/确认号，可以选择Wireshark菜单栏中的 Edit ->
+//              Preferences ->protocols ->TCP，去掉Relative sequence number
+//              后面勾选框中的√即可
+//
 // Author: sailsxu <sailsxu@gmail.com>
 // Created: 2016-11-16 14:42:42
 

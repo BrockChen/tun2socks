@@ -12,12 +12,14 @@
 #ifndef ERRORS_H_
 #define ERRORS_H_
 
-#define ERR_SUCCESS          0
-#define ERR_HEADER_TOO_SHORT 1
-#define ERR_PACKET_TOO_SHORT 2
-#define ERR_IP_VERSION       3
-#define ERR_NOT_TCP_PACKET   4
-#define ERR_CHECKSUM         5
+#define ERR_SUCCESS            0
+#define ERR_HEADER_TOO_SHORT   1
+#define ERR_PACKET_TOO_SHORT   2
+#define ERR_IP_VERSION         3
+#define ERR_NOT_TCP_PACKET     4
+#define ERR_CHECKSUM           5
+#define ERR_TTL                6
+#define ERR_IP_NEED_REASSEMBLE 7
 
 
 #define ERR_OTHER            1000

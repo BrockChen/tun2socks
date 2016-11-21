@@ -82,11 +82,12 @@ int ip_input(const uint8_t* data, int len) {
   if ((ret = parse_ip(data, len, &packet)) != 0) {
     return ret;
   }
-  // 这里只处理tcp
-  if (packet.protocol != TCP_PROTOCOL) {
-    return ERR_NOT_TCP_PACKET;
+
+  if (packet.ttl == 0) {
+    DEBUG_LOG("IP Packet dropped due to ttl == 0");
+    return ERR_TTL;
   }
-  // 校验ip包合法性, 版本,checksum
+
   if (packet.version != 4) {
     DEBUG_LOG("IP packet dropped due to bad version number:%d", packet.version);
     return ERR_IP_VERSION;
@@ -99,33 +100,22 @@ int ip_input(const uint8_t* data, int len) {
   }
 
   // 如果没有分片，那么就不用拼接
-  if ((packet.flags & IP_MORE_FRAGMENTS) != IP_MORE_FRAGMENTS) {
+  if ((packet.flags & IP_MORE_FRAGMENTS) == IP_MORE_FRAGMENTS) {
     // 由于只处理tcp，tcp分段机制保证了ip层不用再分片
-    return input_tcp(packet.data, packet.total_len-packet.ihl);
+    DEBUG_LOG("IP packet dropped due to need reassemble");
+    return ERR_IP_NEED_REASSEMBLE;
   }
 
-  // 对于TCP来说，它是尽量避免分片的,它通过MSS（最长报文大小），用来表
-  // 示本段所能接收的最大长度的报文段。MSS=MTU-TCP首部大小-IP首部大小，
-  // MTU值通过查询链路层得知，常见以太网的MTU为1500。由于tcp的可选字段，
-  // 会让tcp的头部最大为60字节，所以正常的最大段长度小于1460
+  switch (packet.protocol) {
+    case TCP_PROTOCOL:
+      return input_tcp(packet.data, packet.total_len-packet.ihl);
+      break;
+    default:
+      DEBUG_LOG("Unknown IP header proto\n");
+      return ERR_NOT_TCP_PACKET;
+      break;
+  }
 
-  // 所以这时暂时不处理
-
-  // // 寻找reassitem
-  // if (reass_header == nullptr) {
-  //   ip_reassitem* item = (reinterpret_cast<ip_reassitem*>(
-  //       malloc(sizeof(ip_reassitem))));
-  //   item->next = nullptr;
-  //   item->data = (reinterpret_cast<ip_reassdata*>(
-  //       malloc(sizeof(ip_reassdata))));
-  //   item->id = ntohs(ip->id);
-  //   item->srcaddr = ntohl(ip->srcaddr);
-  //   item->dstaddr = ntohl(ip->dstaddr);
-  //   item->data_len = ntohs(ip->len)-ip->ihl*4;
-
-  //   reass_header = item;
-  // } else {
-  // }
   return ERR_OTHER;
 }
 
