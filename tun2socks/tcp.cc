@@ -9,11 +9,11 @@
 // Author: sailsxu <sailsxu@gmail.com>
 // Created: 2016-11-16 23:17:15
 
-#include "tcp.h"
-#include <stdint.h>
+#include "tun2socks/tcp.h"
 #include <arpa/inet.h>
-#include "errors.h"
-#include "ip4.h"
+#include <stdint.h>
+#include "tun2socks/errors.h"
+#include "tun2socks/ip4.h"
 
 int parse_tcp(struct ip_packet *ip, int len, struct tcp_segment* seg) {
   if (len < 20) {

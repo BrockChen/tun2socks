@@ -29,8 +29,8 @@
 // Created: 2016-11-16 14:42:42
 
 
-#ifndef TEST_DATA_H_
-#define TEST_DATA_H_
+#ifndef TEST_TEST_DATA_H_
+#define TEST_TEST_DATA_H_
 
 #include <stdlib.h>
 
@@ -57,4 +57,4 @@ extern void init_data();
 extern void set_hexstr_to_int8array(const char* hexstr, uint8_t* out);
 
 
-#endif  // TEST_DATA_H_
+#endif  // TEST_TEST_DATA_H_

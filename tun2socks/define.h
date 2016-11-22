@@ -9,8 +9,8 @@
 // Author: sailsxu <sailsxu@gmail.com>
 // Created: 2016-11-12 15:38:44
 
-#ifndef DEFINE_H_
-#define DEFINE_H_
+#ifndef TUN2SOCKS_DEFINE_H_
+#define TUN2SOCKS_DEFINE_H_
 
 #include <stdio.h>
 
@@ -42,4 +42,4 @@
   }
 #endif
 
-#endif  // DEFINE_H_
+#endif  // TUN2SOCKS_DEFINE_H_

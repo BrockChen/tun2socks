@@ -10,9 +10,9 @@
 // Created: 2016-11-17 09:33:24
 
 #include "catch.hpp"
-#include "../src/ip4.h"
-#include "../src/tcp.h"
-#include "test_data.h"
+#include "tun2socks/ip4.h"
+#include "tun2socks/tcp.h"
+#include "test/test_data.h"
 
 TEST_CASE("tcp", "parse") {
   struct ip_packet ip;

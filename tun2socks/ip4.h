@@ -26,11 +26,12 @@
 // +----------------------------------------------------------+
 //
 
-#ifndef IP4_H_
-#define IP4_H_
+#ifndef TUN2SOCKS_IP4_H_
+#define TUN2SOCKS_IP4_H_
+
 
 #include <stdint.h>
-#include "define.h"  // NOLINT
+#include "tun2socks/define.h"
 
 #define UDP_PROTOCOL 17
 #define TCP_PROTOCOL 6
@@ -88,4 +89,4 @@ extern int parse_ip(const uint8_t* data, int len, ip_packet* packet);
 extern int ip_input(const uint8_t* data, int len);
 
 
-#endif  // IP4_H_
+#endif  // TUN2SOCKS_IP4_H_

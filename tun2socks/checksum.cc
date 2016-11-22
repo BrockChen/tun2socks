@@ -10,7 +10,7 @@
 // Created: 2016-11-14 15:02:39
 
 
-#include "checksum.h"  // NOLINT
+#include "tun2socks/checksum.h"  // NOLINT
 #include <string.h>
 
 // 1、  把校验和字段置为0；

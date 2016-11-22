@@ -9,8 +9,8 @@
 // Author: sailsxu <sailsxu@gmail.com>
 // Created: 2016-11-16 22:59:36
 
-#ifndef ERRORS_H_
-#define ERRORS_H_
+#ifndef TUN2SOCKS_ERRORS_H_
+#define TUN2SOCKS_ERRORS_H_
 
 #define ERR_SUCCESS            0
 #define ERR_HEADER_TOO_SHORT   1
@@ -24,4 +24,4 @@
 
 #define ERR_OTHER            1000
 
-#endif  // ERRORS_H_
+#endif  // TUN2SOCKS_ERRORS_H_

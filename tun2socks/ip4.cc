@@ -9,12 +9,12 @@
 // Author: sailsxu <sailsxu@gmail.com>
 // Created: 2016-11-11 23:53:41
 
-#include "ip4.h"  // NOLINT
-#include <stdlib.h>
+#include "tun2socks/ip4.h"
 #include <arpa/inet.h>
+#include <stdlib.h>
 #include <string.h>
-#include "checksum.h"
-#include "errors.h"
+#include "tun2socks/checksum.h"
+#include "tun2socks/errors.h"
 
 
 int parse_header(const uint8_t* data, int len, ip_packet* packet) {

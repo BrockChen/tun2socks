@@ -26,8 +26,8 @@
 // +----------------------------------------------------------+
 //
 
-#ifndef TCP_H_
-#define TCP_H_
+#ifndef TUN2SOCKS_TCP_H_
+#define TUN2SOCKS_TCP_H_
 
 #include <stdint.h>
 #include "define.h"  // NOLINT
@@ -105,5 +105,5 @@ extern int input_tcp(const uint8_t* data, int len);
 
 
 
-#endif  // TCP_H_
+#endif  // TUN2SOCKS_TCP_H_
 

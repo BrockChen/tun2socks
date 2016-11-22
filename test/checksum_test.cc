@@ -13,7 +13,7 @@
 
 #include <arpa/inet.h>
 #include "catch.hpp"
-#include "../src/checksum.h"
+#include "tun2socks/checksum.h"
 
 
 

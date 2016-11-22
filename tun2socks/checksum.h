@@ -9,11 +9,11 @@
 // Author: sailsxu <sailsxu@gmail.com>
 // Created: 2016-11-14 15:01:43
 
-#ifndef CHECKSUM_H_
-#define CHECKSUM_H_
+#ifndef TUN2SOCKS_CHECKSUM_H_
+#define TUN2SOCKS_CHECKSUM_H_
 
 #include "ip4.h"  // NOLINT
 
 int ip_checksum(const uint8_t * packets, int len);
 
-#endif  // CHECKSUM_H_
+#endif  // TUN2SOCKS_CHECKSUM_H_

@@ -10,8 +10,8 @@
 // Created: 2016-11-15 10:37:45
 
 #include "catch.hpp"
-#include "../src/ip4.h"
-#include "test_data.h"
+#include "tun2socks/ip4.h"
+#include "test/test_data.h"
 
 
 extern uint8_t buf1[20];
