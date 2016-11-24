@@ -15,5 +15,6 @@
 #include "ip4.h"  // NOLINT
 
 int ip_checksum(const uint8_t * packets, int len);
-
+int tcp_checksum(const uint8_t* packet, int len,
+                 uint32_t srcaddr, uint32_t dstaddr);
 #endif  // TUN2SOCKS_CHECKSUM_H_

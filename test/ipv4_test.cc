@@ -52,17 +52,19 @@ TEST_CASE("IPV4", "ip parser") {
 
 
   init_data();
-  REQUIRE(parse_ip(conn_syn, 100, &packet) == 0);
-  REQUIRE(packet.version == 4);
-  REQUIRE(packet.ihl == 20);
-  REQUIRE(packet.total_len == 64);
-  REQUIRE(packet.id == 0xb64f);
-  REQUIRE(packet.flags == 0x02);
-  REQUIRE(packet.frag_off == 0);
-  REQUIRE(packet.ttl == 64);
-  REQUIRE(packet.protocol == TCP_PROTOCOL);
-  REQUIRE(packet.chk_sum == 0x0000);
-  REQUIRE(packet.srcaddr == 0xc0a801bb);  // 192.168.1.187
-  REQUIRE(packet.dstaddr == 0x6e4c130b);  // 110.76.19.11
+  ip_packet* p = parse_ip(conn_syn, 100);
+  REQUIRE(p != NULL);
+  REQUIRE(p->version == 4);
+  REQUIRE(p->ihl == 20);
+  REQUIRE(p->total_len == 64);
+  REQUIRE(p->id == 0xb64f);
+  REQUIRE(p->flags == 0x02);
+  REQUIRE(p->frag_off == 0);
+  REQUIRE(p->ttl == 64);
+  REQUIRE(p->protocol == TCP_PROTOCOL);
+  REQUIRE(p->chk_sum == 0x0000);
+  REQUIRE(p->srcaddr == 0xc0a801bb);  // 192.168.1.187
+  REQUIRE(p->dstaddr == 0x6e4c130b);  // 110.76.19.11
+  drop_ip(p);
 
 }

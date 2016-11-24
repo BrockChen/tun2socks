@@ -20,6 +20,8 @@
 #define ERR_CHECKSUM           5
 #define ERR_TTL                6
 #define ERR_IP_NEED_REASSEMBLE 7
+#define ERR_IP                 8
+#define ERR_TCP_PARSE          9
 
 
 #define ERR_OTHER            1000

@@ -53,8 +53,8 @@ extern uint8_t close_fin_ack2[100];  // 74 s->c
 extern uint8_t close_ack[100];  // 74 c->s
 
 
-extern void init_data();
-extern void set_hexstr_to_int8array(const char* hexstr, uint8_t* out);
+void init_data();
+void set_hexstr_to_int8array(const char* hexstr, uint8_t* out);
 
 
 #endif  // TEST_TEST_DATA_H_
