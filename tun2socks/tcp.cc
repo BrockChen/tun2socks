@@ -108,6 +108,7 @@ struct tcp_pcb* lookup_pcb(uint32_t srcip, uint16_t srcport,
   pcb->sport = srcport;
   pcb->dport = dstPort;
   pcb->iss = generate_iss();
+  pcb->recved_fin = 0;
   return pcb;
 }
 

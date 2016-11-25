@@ -162,7 +162,7 @@ struct tcp_pcb {
   uint32_t seq;
   // 发送相关字段
   uint32_t snd_una;  // 最老还没有被确认的序列号 unacknowledged
-  uint32_t snd_nxt;  // 下一个将要发送的字节序号
+  uint32_t snd_nxt;  // 下一个将要发送的序列号
   uint32_t snd_wnd;  // 发送窗口
   uint32_t snd_up;   // 发送优先指针
   uint32_t snd_wl1;  // 上次窗口更新时的序列号
@@ -175,6 +175,7 @@ struct tcp_pcb {
   uint32_t rcv_up;   // 接收优先指针
   uint32_t irs;      // 初始接收序列号
 
+  uint8_t recved_fin;  // 是否收到了fin，用于发送ack之后，判断状态
 
   uint8_t flags;                     // 附加状态信息
 #define TF_ACK_DELAY (uint8_t)0x01U  // Delayed ACK

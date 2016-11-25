@@ -154,4 +154,6 @@ int ip_input(const uint8_t* data, int len) {
   return ERR_OTHER;
 }
 
-void ip_output();
+int ip_output(struct tcp_pcb *pcb, uint8_t* data, int len) {
+  return 0;
+}

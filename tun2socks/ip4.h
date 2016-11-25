@@ -47,7 +47,7 @@
 //   uint16_t eth_type;  // 以太网类型
 // } __attribute__((packed));
 
-
+// 一个完整的packet(可能会由多个ip包组成)
 typedef struct ip_packet {
   uint8_t ihl;
   uint8_t version;
@@ -69,6 +69,6 @@ int parse_header(const uint8_t* data, int len, ip_packet* packet);
 ip_packet*  parse_ip(const uint8_t* data, int len);
 int drop_ip(ip_packet* packet);
 
-int ip_input(const uint8_t* data, int len);
+int ip_output(struct tcp_pcb *pcb, uint8_t* data, int len);
 
 #endif  // TUN2SOCKS_IP4_H_
